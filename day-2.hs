@@ -9,9 +9,23 @@ parse :: String -> [[Integer]]
 parse input = map parseLine $ lines input
     where parseLine = map (toInteger . read) . words
 
-checksum :: String -> Integer
-checksum input =  sum $ map minmaxDiff $ parse input
+checksumA :: String -> Integer
+checksumA input =  sum $ map minmaxDiff $ parse input
     where minmaxDiff = (-) <$> maximum <*> minimum
 
+checksumB :: String -> Integer
+checksumB input =  sum $ map evenDiv $ parse input
+    where evenDiv [] = 0
+          evenDiv (x:xs) = if hasMultiple x xs then getResult x xs
+                                               else evenDiv xs
+          hasMultiple n = any $ test n
+          test a b = let (m, n) = sort a b
+                     in m `mod` n == 0
+          sort a b = if a >= b then (a, b)
+                               else (b, a)
+          getResult n ns = let rs = dropWhile (not . test n) ns
+                               (p, q) = sort n $ head rs
+                           in p `div` q
+
 main :: IO ()
-main = print $ checksum input
+main = print (checksumA input) >> print (checksumB input)
