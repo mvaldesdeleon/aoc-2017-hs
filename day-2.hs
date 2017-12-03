@@ -11,8 +11,7 @@ parse input = map parseLine $ lines input
 
 checksum :: String -> Integer
 checksum input =  sum $ map minmaxDiff $ parse input
-    where minmaxDiff = diff <$> maximum <*> minimum
-          diff max min = max - min
+    where minmaxDiff = (-) <$> maximum <*> minimum
 
 main :: IO ()
 main = print $ checksum input
