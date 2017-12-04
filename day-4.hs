@@ -8,9 +8,15 @@ input = "una bokpr ftz ryw nau yknf fguaczl anu\ntvay wvco bcoblpt fwzg sfsys zv
 parse :: String -> [[String]]
 parse input = map words $ lines input
 
-countValid :: String -> Integer
-countValid input = toInteger $ length $ filter valid $ parse input
+countValidA :: String -> Integer
+countValidA input = toInteger $ length $ filter valid $ parse input
     where valid xs = (length xs) == (length $ nub xs)
 
+countValidB :: String -> Integer
+countValidB input = toInteger $ length $ filter valid $ parse input
+    where valid xs = (noDupes xs) && (noAnas xs)
+          noDupes xs = (length xs) == (length $ nub xs)
+          noAnas xs = noDupes $ map sort xs
+
 main :: IO ()
-main = print $ countValid input
+main = print (countValidA input) >> print (countValidB input)
