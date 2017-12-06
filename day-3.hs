@@ -28,6 +28,15 @@ centerOffset input = if input <= 1 then 0
     where ly = layer input
           cornerOffset = (input - base ly) `mod` (ly * 2)
 
+first :: Integer -> Integer
+first input = let map = singleton (0,0) 1
+                  n = 2
+                  in next map n
+    where next map n = let c = coords n
+                           v = neighbors map c
+                           in if v > input then v
+                                           else next (insert c v map) (n + 1)
+
 coords :: Integer -> Coords
 coords input = if input <= 1 then (0, 0)
                              else makeCoords (side input) (centerOffset input)
@@ -37,17 +46,6 @@ coords input = if input <= 1 then (0, 0)
           makeCoords 1 offset = (-offset, ly)
           makeCoords 2 offset = (-ly, -offset)
           makeCoords 3 offset = (offset, -ly)
-
--- given the state (map) and a position (n), we can generate the updated state, the next position, and the last value
-
-first :: Integer -> Integer
-first input = let map = singleton (0,0) 1
-                  n = 2
-                  in next map n
-    where next map n = let c = coords n
-                           v = neighbors map c
-                           in if v > input then v
-                                           else next (insert c v map) (n + 1)
 
 neighbors :: Map Coords Integer -> Coords -> Integer
 neighbors map (x, y) = get (x + 1, y) + get (x + 1, y + 1) +
